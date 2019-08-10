@@ -40,9 +40,10 @@ export default class PhoneCatalog extends Component{
                     <a href="#!/phones/${ phone.id }">${ phone.name  }</a>
                     <p>${ phone.snippet }</p>
                </li>  
-           `).join('') }
-                          
+           `).join('') }                          
             </ul>
         `;
     }
+
+
 }

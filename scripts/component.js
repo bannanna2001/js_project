@@ -12,6 +12,4 @@ export default class Component {
     show() {
         this._element.classList.remove(CLASS_HIDDEN);
     }
-
-
 }
