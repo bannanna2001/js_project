@@ -1,6 +1,8 @@
 import PhoneCatalog from './components/phone-catalog.js';
 import PhoneService from './services/phone-service.js';
 import PhoneViewer from './components/phone-viewer.js';
+import PhonesFilter from './components/phones-filter.js';
+import ShoppingCart from './components/shopping-cart.js';
 
 export default class PhonePage {
     constructor({element}) {
@@ -9,27 +11,53 @@ export default class PhonePage {
 
         this._initCatalog();
         this._initViewer();
+        this._initFilters();
+        this._initShoppingCart();
     }
 
     _initCatalog() {
         this._catalog = new PhoneCatalog({
             element: document.querySelector('[data-component = "phone-catalog"]'),
             phones: PhoneService.getPhones(),
-            onPhoneSelected: ( phoneId ) => {
-                let phoneDetails = PhoneService.getPhone(phoneId);
-
-                this._catalog.hide();
-                this._viewer.show(phoneDetails);
-            },
         });
-    };
+
+        this._catalog.subscribe("phoneSelected", phoneId => {
+            let phoneDetails = PhoneService.getPhone(phoneId);
+            this._catalog.hide();
+            this._viewer.show(phoneDetails);
+        });
+
+        this._catalog.subscribe("add", phoneId => {
+            this._shoppingCart.addItem(phoneId);
+        });
+    }
 
     _initViewer() {
         this._viewer = new PhoneViewer({
-           element:  document.querySelector('[data-component = "phone-viewer"]'),
+           element:  this._element.querySelector('[data-component = "phone-viewer"]'),
         });
 
-    }
+        this._viewer.subscribe("add", (phoneId) => {
+            this._shoppingCart.addItem(phoneId);
+        });
+
+        this._viewer.subscribe("back", (phoneId) => {
+            this._catalog.show();
+            this._viewer.hide();;
+        });
+    };
+
+    _initShoppingCart() {
+        this._shoppingCart = new ShoppingCart({
+            element:  this._element.querySelector('[data-component = "shopping-cart"]'),
+        });
+    };
+
+    _initFilters() {
+        this._filter = new PhonesFilter({
+            element:  this._element.querySelector('[data-component = "phones-filter"]'),
+        });
+    };
 
     _render(){
         this._element.innerHTML = `
@@ -38,34 +66,18 @@ export default class PhonePage {
               <!--Sidebar-->
               <div class="col-md-2">
                 <section>
-                  <p>
-                    Search:
-                    <input>
-                  </p>
-        
-                  <p>
-                    Sort by:
-                    <select>
-                      <option value="name">Alphabetical</option>
-                      <option value="age">Newest</option>
-                    </select>
-                  </p>
+                    <div data-component="phones-filter"></div>
                 </section>
         
                 <section>
-                  <p>Shopping Cart</p>
-                  <ul>
-                    <li>Phone 1</li>
-                    <li>Phone 2</li>
-                    <li>Phone 3</li>
-                  </ul>
+                  <div data-component="shopping-cart"></div>
                 </section>
               </div>
         
               <!--Main content-->
               <div class="col-md-10">
                 <div data-component = "phone-catalog"> </div>
-                <div data-component = "phone-viewer"> </div>
+                <div data-component = "phone-viewer" class="js-hidden"> </div>
               </div>                
             </div>
         `;

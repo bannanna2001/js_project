@@ -12,4 +12,28 @@ export default class Component {
     show() {
         this._element.classList.remove(CLASS_HIDDEN);
     }
+
+    subscribe(eventName, callback) {
+        this._element.addEventListener(eventName, event => {
+            callback(event.detail);
+        });
+    }
+
+    emit(eventName, data) {
+        const event = new CustomEvent(eventName, {
+            detail: data,
+        })
+        this._element.dispatchEvent(event);
+    }
+
+    _on(eventName, selector, callback) {
+        this._element.addEventListener(eventName, (event) => {
+            let delegateTarget = event.target.closest(selector);
+            if (!delegateTarget) {
+                return;
+            }
+
+            callback(event);
+        });
+    }
 }

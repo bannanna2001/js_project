@@ -5,30 +5,28 @@ export default class PhoneViewer extends Component{
     constructor({element}) {
         super({ element });
 
-        this._element.addEventListener("click", (event) => {
+        this._on("click", '[data-element="back-button"]', () => {
+            this.emit("back");
+        });
 
-             if (event.target === this._element.querySelector('.back-button'))
-                 this.hide();
-
-             if (event.target.getAttribute('data-image')) {
-                 this._element.querySelector('.phone').setAttribute("src", event.target.getAttribute('src'));
-             };
-          });
+        this._on("click", '[data-element="add-button"]', () => {
+            this.emit("add", this._phone.id);
+        });
     }
 
-    _render(phone) {
+    _render() {
         this._element.innerHTML = `
-            <img class="phone" src  ="${ phone.images[0] }">
+            <img class="phone" src  ="${ this._phone.images[0] }">
 
-            <button class = "back-button">Back</button>
-            <button>Add to basket</button>
+            <button data-element="back-button">Back</button>
+            <button data-element="add-button">Add to basket</button>
         
-            <h1>${ phone.name }</h1>
+            <h1>${ this._phone.name }</h1>
         
-            <p>${ phone.description } </p>
+            <p>${ this._phone.description } </p>
         
             <ul class="phone-thumbs">
-            ${ phone.images.map( (images, i) => `
+            ${ this._phone.images.map( (images, i) => `
               <li>
                 <img data-image = "id" src= "${ images }">
               </li>`).join("")}              
@@ -37,17 +35,12 @@ export default class PhoneViewer extends Component{
     }
 
     show(phoneDetails) {
-        let phone = phoneDetails;
-        this._render(phone);
+        this._phone = phoneDetails;
+        this._render();
+
+        super.show();
     }
 
-    hide() {
-        new PhonePage( {element: document.querySelector('[data-page-container]')} );
-    }
-
-    tmp() {
-
-    }
 }
 
 
