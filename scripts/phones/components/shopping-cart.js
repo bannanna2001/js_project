@@ -4,11 +4,7 @@ export default class ShoppingCart extends Component {
     constructor ({ element }) {
         super({element});
 
-        this._items = {
-            test: 1,
-            foo: 2,
-            bar: 3,
-        };
+        this._items = {};
 
         this._render();
 
@@ -21,7 +17,7 @@ export default class ShoppingCart extends Component {
     addItem(item) {
         if (!this._items[item]) {
             this._items[item] = 0;
-        };
+        }
 
         this._items[item]++;
         this._render();

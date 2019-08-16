@@ -22,7 +22,7 @@ export default class Component {
     emit(eventName, data) {
         const event = new CustomEvent(eventName, {
             detail: data,
-        })
+        });
         this._element.dispatchEvent(event);
     }
 

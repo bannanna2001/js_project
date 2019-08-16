@@ -1,11 +1,9 @@
 import Component from "../../component.js";
+import PhoneService from "../services/phone-service.js";
 
 export default class PhoneCatalog extends Component{
-    constructor({ element, phones }) {
+    constructor({ element }) {
         super({ element });
-        this._phones = phones;
-
-        this._render();
 
         this._on("click", '[data-element = "add-button"]', (event) => {
             let phoneElement = event.target.closest('[data-element = "phone"]');
@@ -39,5 +37,12 @@ export default class PhoneCatalog extends Component{
            `).join('') }                          
             </ul>
         `;
+    }
+
+    show(phones) {
+        this._phones = phones;
+        this._render();
+
+        super.show();
     }
 }

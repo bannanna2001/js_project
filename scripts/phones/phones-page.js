@@ -18,13 +18,15 @@ export default class PhonePage {
     _initCatalog() {
         this._catalog = new PhoneCatalog({
             element: document.querySelector('[data-component = "phone-catalog"]'),
-            phones: PhoneService.getPhones(),
         });
 
+        this._loadPhonesFromServer();
+
         this._catalog.subscribe("phoneSelected", phoneId => {
-            let phoneDetails = PhoneService.getPhone(phoneId);
-            this._catalog.hide();
-            this._viewer.show(phoneDetails);
+            PhoneService.getPhone(phoneId, (phoneDetails) => {
+                this._catalog.hide();
+                this._viewer.show(phoneDetails);
+            });
         });
 
         this._catalog.subscribe("add", phoneId => {
@@ -42,10 +44,16 @@ export default class PhonePage {
         });
 
         this._viewer.subscribe("back", (phoneId) => {
-            this._catalog.show();
-            this._viewer.hide();;
+            this._viewer.hide();
+            this._loadPhonesFromServer();
         });
     };
+
+    _loadPhonesFromServer() {
+        PhoneService.getPhones((phones) => {
+            this._catalog.show(phones);
+        });
+    }
 
     _initShoppingCart() {
         this._shoppingCart = new ShoppingCart({
@@ -56,6 +64,10 @@ export default class PhonePage {
     _initFilters() {
         this._filter = new PhonesFilter({
             element:  this._element.querySelector('[data-component = "phones-filter"]'),
+        });
+
+        this._filter.subscribe("filter", (phones) => {
+            this._catalog.show(phones);
         });
     };
 
@@ -76,7 +88,7 @@ export default class PhonePage {
         
               <!--Main content-->
               <div class="col-md-10">
-                <div data-component = "phone-catalog"> </div>
+                <div data-component = "phone-catalog" class="js-hidden"> </div>
                 <div data-component = "phone-viewer" class="js-hidden"> </div>
               </div>                
             </div>

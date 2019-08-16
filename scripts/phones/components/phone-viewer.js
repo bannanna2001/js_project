@@ -12,6 +12,11 @@ export default class PhoneViewer extends Component{
         this._on("click", '[data-element="add-button"]', () => {
             this.emit("add", this._phone.id);
         });
+
+        this._on("click", '[data-image = "id"]', (event) => {
+            let mainPicture = document.querySelector(".phone");
+            mainPicture.setAttribute("src", event.target.getAttribute("src"));
+        });
     }
 
     _render() {
