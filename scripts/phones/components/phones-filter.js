@@ -10,7 +10,7 @@ export default class PhonesFilter extends Component {
         this._on("input", '[data-element="filter"]', (event) => {
             PhoneService.getPhones((phones) => {
                 let n = phones.filter( (p) => {
-                    if (p.id.indexOf(event.target.value) !== -1)
+                    if (p.name.toUpperCase().indexOf(event.target.value.toUpperCase()) !== -1)
                         return p;
                 });
 
@@ -19,6 +19,34 @@ export default class PhonesFilter extends Component {
                 else
                     this.emit("filter", []);
             });
+        });
+
+        this._on("change", '[data-element="sort"]', (event) => {
+            let sortCriteria = event.target.value;
+
+            if (sortCriteria === 'age') {
+                PhoneService.getPhones((phones) => {
+                    let n = phones.sort((a, b) => {
+                        return b.age - a.age;
+                    });
+                    this.emit("filter", n);
+                });
+            }
+
+            if (sortCriteria === 'name') {
+                PhoneService.getPhones((phones) => {
+                    let n = phones.sort((a, b) => {
+                        if (a.name.toUpperCase() > b.name.toUpperCase())
+                            return 1;
+
+                        if (a.name.toUpperCase() < b.name.toUpperCase())
+                            return -1;
+
+                        return 0;
+                    });
+                    this.emit("filter", n);
+                });
+            }
         });
     }
 
@@ -29,11 +57,10 @@ export default class PhonesFilter extends Component {
             </p>
             
             <p>Sort by:
-                <select>
+                <select data-element="sort">
                     <option value="name">Alphabetical</option>
                     <option value="age">Newest</option>
                 </select>
             </p>`;
     }
-
 }
