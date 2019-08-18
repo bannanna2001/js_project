@@ -8,24 +8,24 @@ export default class PhonesFilter extends Component {
         this._render();
 
         this._on("input", '[data-element="filter"]', (event) => {
-            PhoneService.getPhones((phones) => {
-                let n = phones.filter( (p) => {
+            PhoneService.getPhones().then((phones) => {
+                let n = phones.filter((p) => {
                     if (p.name.toUpperCase().indexOf(event.target.value.toUpperCase()) !== -1)
                         return p;
                 });
 
-                if (n.length     > 0)
+                if (n.length > 0)
                     this.emit("filter", n);
                 else
                     this.emit("filter", []);
-            });
+            })
         });
 
         this._on("change", '[data-element="sort"]', (event) => {
             let sortCriteria = event.target.value;
 
             if (sortCriteria === 'age') {
-                PhoneService.getPhones((phones) => {
+                PhoneService.getPhones().then((phones) => {
                     let n = phones.sort((a, b) => {
                         return b.age - a.age;
                     });
@@ -34,7 +34,7 @@ export default class PhonesFilter extends Component {
             }
 
             if (sortCriteria === 'name') {
-                PhoneService.getPhones((phones) => {
+                PhoneService.getPhones().then((phones) => {
                     let n = phones.sort((a, b) => {
                         if (a.name.toUpperCase() > b.name.toUpperCase())
                             return 1;

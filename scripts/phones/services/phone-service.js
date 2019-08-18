@@ -1,21 +1,16 @@
 import HTTPService from "../../http-service.js";
 
 const PhoneService = {
-  getPhones(callback) {
-      HTTPService.sendRequest('/api/phones.json', {
-          successCallback: callback,
-      });
-  },
+    getPhones() {
+        return HTTPService.sendRequest('/api/phones.json');
+    },
 
-    getPhone(phoneId, callback) {
-        HTTPService.sendRequest(`/api/phones/${phoneId}.json`, {
-            successCallback: callback,
-        });
+    getPhone(phoneId) {
+        return HTTPService.sendRequest(`/api/phones/${phoneId}.json`);
     },
 
     getFilterPhones(value) {
-        HTTPService.sendRequest('/api/phones.json', {
-        });
+        HTTPService.sendRequest('/api/phones.json', {});
     },
 };
 
